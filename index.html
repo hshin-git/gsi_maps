@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>GSI Maps</title>
 
 <link rel="stylesheet" href="dist/leaflet.css" />
@@ -9,9 +10,9 @@
 <link rel="apple-touch-icon" type="image/png" href="./favicon/apple-touch-icon-180x180.png">
 
 <style type="text/css">
-html,body { width: 99%; height: 95%; }
-button { border-style: solid; font-weight: bold; width: 100px; border-radius: 8px; background-color: gold; }
-#mapContainer { width: 100%; height: 100%; }
+body { padding: 0; margin: 0; }
+html, body, #mapContainer { height: 99%; width: 100vw; }
+button { border-style: none; font-weight: bold; width: 100px; border-radius: 8px; background-color: gold; }
 </style>
 
 <script src="dist/leaflet.js"></script>
@@ -19,7 +20,7 @@ button { border-style: solid; font-weight: bold; width: 100px; border-radius: 8p
 ////////// SCRIPT BEGIN
 // ベース地図の定義
 const baseTiles = {
-  "GSI:白地図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png'),
+//"GSI:白地図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png'),
   "GSI:淡色地図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png'),
   "GSI:標準地図": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'),
 //"GSI:英語地図": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/english/{z}/{x}/{y}.png'),
@@ -47,7 +48,7 @@ function _onLoad() {
   L.control.zoom({position:'bottomleft'}).addTo(thisMap);
   // 地図の登録
   L.control.layers(baseTiles,overTiles).addTo(thisMap);
-  baseTiles["GSI:白地図"].addTo(thisMap);
+  baseTiles["GSI:淡色地図"].addTo(thisMap);
 };
 // 現在地の取得
 var hereMarker = null;
