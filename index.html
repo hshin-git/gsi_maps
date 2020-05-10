@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" type="image/png" href="./favicon/apple-touch-icon-180x180.png">
 
 <style type="text/css">
-body { padding: 0; margin: 0; }
+body { padding: 0; margin: 0; background-color: dimgray; }
 html, body, #mapContainer { height: 99%; width: 100vw; }
 button { border-style: none; font-weight: bold; width: 100px; border-radius: 8px; background-color: gold; }
 </style>
@@ -20,22 +20,28 @@ button { border-style: none; font-weight: bold; width: 100px; border-radius: 8px
 ////////// SCRIPT BEGIN
 // ベース地図の定義
 const baseTiles = {
-//"GSI:白地図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png'),
-  "GSI:淡色地図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png'),
-  "GSI:標準地図": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'),
-//"GSI:英語地図": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/english/{z}/{x}/{y}.png'),
-  "OSM:標準地図": L.tileLayer('http://tile.openstreetmap.jp/{z}/{x}/{y}.png'),
+  "GSI 淡色地図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png'),
+  "GSI 標準地図": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'),
+//"GSI 白地図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png'),
+//"GSI 英語地図": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/english/{z}/{x}/{y}.png'),
+  "OSM 標準地図": L.tileLayer('http://tile.openstreetmap.jp/{z}/{x}/{y}.png'),
 };
 // レイヤ地図の定義
 const OPACITY = 0.8;
 const overTiles = {
-  "GSI:色別標高図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png',{opacity:OPACITY}),
-  "GSI:陰影起伏図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png',{opacity:OPACITY}),
-  "GSI:赤色立体図": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/sekishoku/{z}/{x}/{y}.png',{opacity:OPACITY}),
-  "GSI:傾斜量図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/slopemap/{z}/{x}/{y}.png',{opacity:OPACITY}),
-  "GSI:航空写真": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg',{opacity:OPACITY}),
-  "GSI:活断層図": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/afm/{z}/{x}/{y}.png',{opacity:OPACITY}),
-  "GSI:低湿地": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/swale/{z}/{x}/{y}.png',{opacity:OPACITY}),
+  "GSI 色別標高図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png',{opacity:OPACITY}),
+  "GSI 陰影起伏図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png',{opacity:OPACITY}),
+//"GSI 赤色立体図": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/sekishoku/{z}/{x}/{y}.png',{opacity:OPACITY}),
+  "GSI 傾斜量図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/slopemap/{z}/{x}/{y}.png',{opacity:OPACITY}),
+  "GSI 航空写真": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg',{opacity:OPACITY}),
+  "GSI 活断層図": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/afm/{z}/{x}/{y}.png',{opacity:OPACITY}),
+  "GSI 低湿地": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/swale/{z}/{x}/{y}.png',{opacity:OPACITY}),
+  "GSI 1988-1990": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/gazo4/{z}/{x}/{y}.jpg',{opacity:OPACITY}),
+  "GSI 1984-1986": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/gazo3/{z}/{x}/{y}.jpg',{opacity:OPACITY}),
+  "GSI 1979-1983": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/gazo2/{z}/{x}/{y}.jpg',{opacity:OPACITY}),
+  "GSI 1974-1978": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/gazo1/{z}/{x}/{y}.jpg',{opacity:OPACITY}),
+  "GSI 1961-1969": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}.png',{opacity:OPACITY}),
+  "GSI 1945-1950": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_USA10/{z}/{x}/{y}.png',{opacity:OPACITY}),
 };
 // 地図の初期化
 const homeLat =  35.4685;
@@ -47,8 +53,8 @@ function _onLoad() {
   L.control.scale({maxWidth:200,position:'bottomright',imperial:false}).addTo(thisMap);
   L.control.zoom({position:'bottomleft'}).addTo(thisMap);
   // 地図の登録
-  L.control.layers(baseTiles,overTiles).addTo(thisMap);
-  baseTiles["GSI:淡色地図"].addTo(thisMap);
+  L.control.layers(baseTiles,overTiles,{position:'topleft'}).addTo(thisMap);
+  baseTiles["GSI 淡色地図"].addTo(thisMap);
 };
 // 現在地の取得
 var hereMarker = null;
@@ -71,7 +77,7 @@ function _imaKoko() {
   hereMarker = L.marker([hereLat, hereLon]);
   hereMarker.bindPopup(nowStr);
   hereMarker.addTo(thisMap);
-  hereMap.setView([hereLat, hereLon]);
+  thisMap.setView([hereLat, hereLon]);
 };
 ////////// SCRIPT END
 </script>
