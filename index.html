@@ -10,82 +10,97 @@
 <link rel="apple-touch-icon" type="image/png" href="./favicon/apple-touch-icon-180x180.png">
 
 <style type="text/css">
-body { padding: 0; margin: 0; background-color: dimgray; }
-html, body, #mapContainer { height: 99%; width: 100vw; }
-button { border-style: none; font-weight: bold; width: 100px; border-radius: 8px; background-color: gold; }
+body { padding:0; margin:0; }
+html, body, #mapContainer { height:100%; width:100vw; }
+#hereButton {
+  position:relative; top:10px; padding:10px; z-index:1000;
+  border-style:none; font-weight:bold; border-radius:8px; background-color:gold; 
+}
+.buttonLayout { text-align:center; }
 </style>
 
 <script src="dist/leaflet.js"></script>
 <script>
 ////////// SCRIPT BEGIN
+function GSI_URL(KEY,EXT) { return "http://cyberjapandata.gsi.go.jp/xyz/"+KEY+"/{z}/{x}/{y}."+EXT; };
+function GSI_OPT(MAX,OPA) { return {opacity:OPA, maxNativeZoom:MAX, attribution:"<a href=https://maps.gsi.go.jp/development/ichiran.html>地理院タイル</a>" }; };
+function MAP_OPT(MAX,OPA) { return {opacity:OPA, maxNativeZoom:MAX}; };
 // ベース地図の定義
+const BASE = 1.0;
 const baseTiles = {
-  "GSI 淡色地図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png'),
-  "GSI 標準地図": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'),
-//"GSI 白地図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png'),
-//"GSI 英語地図": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/english/{z}/{x}/{y}.png'),
+  "GSI 淡色地図": L.tileLayer(GSI_URL("pale","png"),GSI_OPT(18,BASE)),
+  "GSI 標準地図": L.tileLayer(GSI_URL("std","png"),GSI_OPT(18,BASE)),
+  "GSI 白地図": L.tileLayer(GSI_URL("blank","png"),GSI_OPT(14,BASE)),
+  "GSI 英語地図": L.tileLayer(GSI_URL("english","png"),GSI_OPT(11,BASE)),
   "OSM 標準地図": L.tileLayer('http://tile.openstreetmap.jp/{z}/{x}/{y}.png'),
 };
 // レイヤ地図の定義
-const OPACITY = 0.8;
+const OVER = 0.75;
 const overTiles = {
-  "GSI 色別標高図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png',{opacity:OPACITY}),
-  "GSI 陰影起伏図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png',{opacity:OPACITY}),
-//"GSI 赤色立体図": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/sekishoku/{z}/{x}/{y}.png',{opacity:OPACITY}),
-  "GSI 傾斜量図": L.tileLayer('http://cyberjapandata.gsi.go.jp/xyz/slopemap/{z}/{x}/{y}.png',{opacity:OPACITY}),
-  "GSI 航空写真": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg',{opacity:OPACITY}),
-  "GSI 活断層図": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/afm/{z}/{x}/{y}.png',{opacity:OPACITY}),
-  "GSI 低湿地": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/swale/{z}/{x}/{y}.png',{opacity:OPACITY}),
-  "GSI 1988-1990": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/gazo4/{z}/{x}/{y}.jpg',{opacity:OPACITY}),
-  "GSI 1984-1986": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/gazo3/{z}/{x}/{y}.jpg',{opacity:OPACITY}),
-  "GSI 1979-1983": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/gazo2/{z}/{x}/{y}.jpg',{opacity:OPACITY}),
-  "GSI 1974-1978": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/gazo1/{z}/{x}/{y}.jpg',{opacity:OPACITY}),
-  "GSI 1961-1969": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}.png',{opacity:OPACITY}),
-  "GSI 1945-1950": L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_USA10/{z}/{x}/{y}.png',{opacity:OPACITY}),
+  "GSI 色別標高図": L.tileLayer(GSI_URL("relief","png"),GSI_OPT(15,OVER)),
+  "GSI 陰影起伏図": L.tileLayer(GSI_URL("hillshademap","png"),GSI_OPT(16,OVER)),
+//"GSI 赤色立体図": L.tileLayer(GSI_URL("sekishoku","png"),GSI_OPT(16,OVER)),
+  "GSI 傾斜量図": L.tileLayer(GSI_URL("slopemap","png"),GSI_OPT(15,OVER)),
+  "GSI 活断層図": L.tileLayer(GSI_URL("afm","png"),GSI_OPT(16,OVER)),
+  "GSI 土地条件図": L.tileLayer(GSI_URL("lcm25k","png"),GSI_OPT(16,OVER)),
+  "GSI 治水地形分類": L.tileLayer(GSI_URL("lcmfc2","png"),GSI_OPT(16,OVER)),
+  "GSI 明治の低湿地": L.tileLayer(GSI_URL("swale","png"),GSI_OPT(16,OVER)),
+  "GSI 航空写真": L.tileLayer(GSI_URL("seamlessphoto","jpg"),GSI_OPT(18,OVER)),
+  "GSI 1988-1990年": L.tileLayer(GSI_URL("gazo4","jpg"),GSI_OPT(17,OVER)),
+  "GSI 1984-1986年": L.tileLayer(GSI_URL("gazo3","jpg"),GSI_OPT(17,OVER)),
+  "GSI 1979-1983年": L.tileLayer(GSI_URL("gazo2","jpg"),GSI_OPT(17,OVER)),
+  "GSI 1974-1978年": L.tileLayer(GSI_URL("gazo1","jpg"),GSI_OPT(17,OVER)),
+  "GSI 1961-1969年": L.tileLayer(GSI_URL("ort_old10","png"),GSI_OPT(17,OVER)),
+  "GSI 1945-1950年": L.tileLayer(GSI_URL("ort_USA10","png"),GSI_OPT(17,OVER)),
+  "AIST 地質図": L.tileLayer('https://gbank.gsj.jp/seamless/v2/api/1.2/tiles/{z}/{y}/{x}.png',MAP_OPT(13,BASE)),
+  "OPTM 公共交通": L.tileLayer('http://www.openptmap.org/tiles/{z}/{x}/{y}.png',MAP_OPT(17,BASE)),
+  "ORM 鉄道路線": L.tileLayer('http://tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',MAP_OPT(19,BASE)),
+  "OSM 航路標識": L.tileLayer('http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',MAP_OPT(18,BASE)),
+  "WMT ハイキング": L.tileLayer('https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png',MAP_OPT(16,BASE)),
+  "WMT サイクリング": L.tileLayer('https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png',MAP_OPT(16,BASE)),
 };
-// 地図の初期化
-const homeLat =  35.4685;
-const homeLon = 139.6297;
+// 地図作成
 var thisMap = null;
 function _onLoad() {
+  // 地図初期化
   thisMap = L.map('mapContainer',{zoomControl:false});
-  thisMap.setView([homeLat, homeLon], 12);
-  L.control.scale({maxWidth:200,position:'bottomright',imperial:false}).addTo(thisMap);
-  L.control.zoom({position:'bottomleft'}).addTo(thisMap);
-  // 地図の登録
-  L.control.layers(baseTiles,overTiles,{position:'topleft'}).addTo(thisMap);
+  thisMap.setView([38.0,139.0], 5);
+  thisMap.on('locationfound', onLocationFound);
+  thisMap.on('locationerror', onLocationError);
+  // レイヤ登録
+  L.control.scale().addTo(thisMap);
+  L.control.zoom().addTo(thisMap);
+  L.control.layers(baseTiles,overTiles).addTo(thisMap);
   baseTiles["GSI 淡色地図"].addTo(thisMap);
 };
-// 現在地の取得
+// 現在位置
 var hereMarker = null;
-var hereLat = homeLat;
-var hereLon = homeLon; 
-function getLatLon() {
-  if (navigator.geolocation) {
-    var setLatLon = function (position) {
-      hereLat = position.coords.latitude;
-      hereLon = position.coords.longitude;
-    };
-    navigator.geolocation.getCurrentPosition(setLatLon);
-  };
-};
-function _imaKoko() {
+var hereCircle = null;
+function onLocationFound(e) {
   const now = new Date();
-  const nowStr = ("0"+now.getHours()).slice(-2) +"時"+ ("0"+now.getMinutes()).slice(-2) +"分"+ ("0"+now.getSeconds()).slice(-2) +"秒";
-  getLatLon();
-  if (hereMarker) { thisMap.removeLayer(hereMarker); };
-  hereMarker = L.marker([hereLat, hereLon]);
-  hereMarker.bindPopup(nowStr);
-  hereMarker.addTo(thisMap);
-  thisMap.setView([hereLat, hereLon]);
+  const nowStr = ("0"+now.getHours()).slice(-2) +":"+ ("0"+now.getMinutes()).slice(-2) +":"+ ("0"+now.getSeconds()).slice(-2) 
+  const radius = e.accuracy / 2;
+  if (hereMarker) {
+    thisMap.removeLayer(hereMarker);
+    //thisMap.removeLayer(hereCircle); 
+  };
+  hereMarker = L.marker(e.latlng).addTo(thisMap).bindPopup("You were here at " + nowStr).openPopup();
+  //hereCircle = L.circle(e.latlng, radius).addTo(thisMap);
+};
+function onLocationError(e) {
+  alert(e.message);
+};
+function _hereButton() {
+  thisMap.locate({setView:true, maxZoom:16});
 };
 ////////// SCRIPT END
 </script>
 </head>
 
 <body onload="_onLoad()">
-<center><button id="imakoko" onClick="_imaKoko()">現在位置</button></center>
-<div id="mapContainer"></div>
+<div id="mapContainer">
+<div class="buttonLayout"><button id="hereButton" onClick="_hereButton()">Locate</button></div>
+</div>
 </body>
 
 </html>

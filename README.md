@@ -21,7 +21,13 @@
 - 航空写真
 
 ## リンク集
-- [地理院タイル一覧](https://maps.gsi.go.jp/development/ichiran.html)
+- [地理院 タイル一覧](https://maps.gsi.go.jp/development/ichiran.html)
+- [産総研 地質情報](https://gbank.gsj.jp/owscontents/)
+- [OpenStreatMap](https://openstreetmap.jp/)
+- [OpenSeaMap](http://map.openseamap.org/)
+- [OpenPtMap](http://www.openptmap.org/)
+- [OpenRailwayMap](https://www.openrailwaymap.org/)
+- [WaymarkedTrails](https://hiking.waymarkedtrails.org/)
 - [Leaflet.js](https://leafletjs.com/)
 - [GSI Maps](http://52.193.72.209/map/)
 
