@@ -1,4 +1,5 @@
 #!/bin/sh
+mkdir layer
 ln -s ../gfs_rank/info .
 ln -s ../gfs_rank/graph .
 ln -s ../gfs_rank/pub/tenki .

@@ -45,7 +45,7 @@ function getSDP_LAYER() {
       SDP_LAYER = L.geoCsv(req.responseText,{firstLineTitles:true, latitudeTitle:'lat', longitudeTitle:'lon', fieldSeparator:',', onEachFeature:sdpText, pointToLayer:sdpIcon,});
     }
   };
-  req.open("GET", "./sdp_layer.csv", false);
+  req.open("GET", "./layer/sdp_layer.csv", false);
   req.send(null);
 };
 getSDP_LAYER();

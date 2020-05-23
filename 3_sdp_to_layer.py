@@ -13,7 +13,7 @@ print("argv:",sys.argv)
 
 SDP_PATH = "./info/sdp_list.csv"
 CSV_PATH = "./graph/%05d.csv"
-OUT_PATH = "./sdp_layer.csv"
+OUT_PATH = "./layer/sdp_layer.csv"
 
 ########################################################
 ## タイムスタンプ処理: 3h間隔へ丸める
