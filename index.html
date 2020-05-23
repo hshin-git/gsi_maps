@@ -100,7 +100,7 @@ const overTiles = {
 var thisMap = null;
 function _onLoad() {
   // 地図初期化
-  thisMap = L.map('mapContainer',{zoomControl:false, center:[35.0,137.0], zoom:5, layers:[baseTiles["OSM 標準地図"],overTiles["GFS 天気予報"]],});
+  thisMap = L.map('mapContainer',{zoomControl:false, center:[37.0,137.0], zoom:5, layers:[baseTiles["GSI 淡色地図"],overTiles["GFS 天気予報"]],});
   thisMap.on('locationfound', onLocationFound);
   thisMap.on('locationerror', onLocationError);
   thisMap.on('contextmenu',onContextMenu);
