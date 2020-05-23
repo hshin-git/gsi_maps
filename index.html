@@ -5,10 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>GSI Maps</title>
 
-<link rel="stylesheet" href="dist/leaflet.css" />
 <link rel="icon" type="image/png" href="./favicon/icon-192x192.png">
 <link rel="apple-touch-icon" type="image/png" href="./favicon/apple-touch-icon-180x180.png">
-
 <style type="text/css">
 body { padding:0; margin:0; }
 html, body, #mapContainer { height:100%; width:100vw; }
@@ -19,8 +17,12 @@ html, body, #mapContainer { height:100%; width:100vw; }
 .buttonLayout { text-align:center; }
 </style>
 
+<link rel="stylesheet" href="dist/leaflet.css" />
+<link rel="stylesheet" href="dist/Control.OSMGeocoder.css" />
+
 <script src="dist/leaflet.js"></script>
 <script src="dist/leaflet.geocsv.js"></script>
+<script src="dist/Control.OSMGeocoder.js"></script>
 <script>
 ////////// SCRIPT BEGIN
 // GFS天気予報
@@ -30,7 +32,7 @@ function sdpIcon(feature,latlng) {
 function sdpText(feature,layer) {
   //alert(Object.keys(feature.properties));
   var html = "<center>";
-  html += "GFS天気予報 " + feature.properties["fuken"] + " " + feature.properties["name"] + "<br>";
+  html += "GFS天気予報" +" "+ feature.properties["fuken"] + " " + feature.properties["name"] + "<br>";
   html += feature.properties["html"];
   html += feature.properties["time"]; 
   html += "</center>"
@@ -103,9 +105,12 @@ function _onLoad() {
   thisMap.on('locationerror', onLocationError);
   // レイヤ登録
   L.control.scale().addTo(thisMap);
-  L.control.zoom().addTo(thisMap);
+  //L.control.zoom().addTo(thisMap);
   L.control.layers(baseTiles,overTiles).addTo(thisMap);
   baseTiles["GSI 淡色地図"].addTo(thisMap);
+  // 地名検索
+  const osmGeocoder = new L.Control.OSMGeocoder({position:'topleft'});
+  thisMap.addControl(osmGeocoder);
 };
 // 現在位置
 var hereMarker = null;
