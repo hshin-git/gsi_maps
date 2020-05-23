@@ -23,10 +23,12 @@ JST2 = datetime(NOW.year,NOW.month,NOW.day,3*int(NOW.hour/3),0) + timedelta(hour
 
 ## 天気アイコンの定義
 ICON = { "快":"./tenki/hare.png", "晴":"./tenki/hare_kumori.png", "曇":"./tenki/kumori.png", "雨":"./tenki/kumori_ame.png", "雪":"./tenki/snow.png",}
+COLOR = { "快":"#f00", "晴":"#f40", "曇":"#000", "雨":"#00f", "雪":"#0f0",}
+TENKI = lambda x: "<font color=%s>%s</font>"%(COLOR[x],x)
 DOW2JP = ["月","火","水","木","金","土","日"]
 DAY_HR = lambda x: "%s曜%02d時"%(DOW2JP[x.dayofweek],x.hour)
 ROUND1 = lambda x: "%.1f"%x
-FORMAT = { "JST":DAY_HR, "気温":ROUND1, "湿度":ROUND1, "雲量":ROUND1, "日射":ROUND1, "突風":ROUND1, "視程":ROUND1,}
+FORMAT = { "JST":DAY_HR, "天気":TENKI, "気温":ROUND1, "湿度":ROUND1, "雲量":ROUND1, "日射":ROUND1, "突風":ROUND1, "視程":ROUND1,}
 
 ########################################################
 ## 抽出地点と気象変数の指定
@@ -46,8 +48,8 @@ for SDP in SDP_LIST.index:
   ########################################################
   ROW = DF[DF.index==JST1].values[0]
   TAB = DF[(DF.index>=JST1) & (DF.index<JST2)].reset_index()
-  HTML = TAB.to_html(formatters=FORMAT,index=False).replace("\n","")
-  SDP_NEWS.loc[SDP] = [LAT,LON,ICON[ROW[0]]] + [JST1,FUKEN,NAME,HTML]
+  HTML = TAB.to_html(formatters=FORMAT,index=False,escape=False).replace("\n","")
+  SDP_NEWS.loc[SDP] = [LAT,LON,ICON[ROW[0]]] + [NOW,FUKEN,NAME,HTML]
 
 ## JSON保存: イマココ用
 SDP_NEWS.to_csv(OUT_PATH,encoding="utf-8")
