@@ -34,7 +34,7 @@ FORMAT = { "JST":DAY_HR, "天気":TENKI, "気温":ROUND1, "湿度":ROUND1, "雲�
 ## 抽出地点と気象変数の指定
 ENCODE = "cp932"
 SDP_LIST = pd.read_csv(SDP_PATH,index_col="SDP",encoding=ENCODE)
-SDP_NEWS = pd.DataFrame(columns=["lat","lon","icon"]+["time","fuken","name","html"],index=SDP_LIST.index)
+SDP_NEWS = pd.DataFrame(columns=["lat","lon","icon","html"],index=SDP_LIST.index)
 
 ########################################################
 for SDP in SDP_LIST.index:
@@ -43,15 +43,20 @@ for SDP in SDP_LIST.index:
   LON = SDP_LIST.loc[SDP,"lon"]
   NAME = SDP_LIST.loc[SDP,"NAME"]
   FUKEN = SDP_LIST.loc[SDP,"FUKEN"]
-  LOCATION = SDP_LIST.loc[SDP,"LOCATION"]
+  #LOCATION = SDP_LIST.loc[SDP,"LOCATION"]
   print(sys.argv[0],SDP,NAME)
   ########################################################
   ROW = DF[DF.index==JST1].values[0]
   TAB = DF[(DF.index>=JST1) & (DF.index<JST2)].reset_index()
-  HTML = TAB.to_html(formatters=FORMAT,index=False,escape=False).replace("\n","")
-  SDP_NEWS.loc[SDP] = [LAT,LON,ICON[ROW[0]]] + [NOW,FUKEN,NAME,HTML]
+  HTML = ""
+  HTML += "<center>"
+  HTML += "GFS天気予報" +" "+ FUKEN +" "+ NAME + "<br>"
+  HTML += TAB.to_html(formatters=FORMAT,index=False,escape=False).replace("\n","")
+  HTML += str(NOW)
+  HTML += "</center>"
+  SDP_NEWS.loc[SDP] = [LAT,LON,ICON[ROW[0]],HTML]
 
-## JSON保存: イマココ用
+## CSV保存: Leaflet用
 SDP_NEWS.to_csv(OUT_PATH,encoding="utf-8")
 
 ########################################################
