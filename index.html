@@ -143,9 +143,10 @@ function onLocationFound(e) {
     //const dist = L.GeometryUtil.distance(thisMap,src,dst);
     const dist = getDistance(src,dst);
     const angl = L.GeometryUtil.bearing(src,dst);
-    dest = "<br>dst "+ angl.toFixed(1) +"deg " + dist.toFixed(1) +"km";
+    dest = "<br>方位 "+ angl.toFixed(1) +"度<br>距離 " + dist.toFixed(1) +"km";
   };
   hereMarker.addTo(thisMap).bindPopup(nowString() + " 現在位置" + dest).openPopup();
+  updateArrow();
 };
 function onLocationError(e) {
   alert(e.message);
@@ -159,6 +160,18 @@ function onContextMenu(e) {
   if (destMarker) { thisMap.removeLayer(destMarker); };
   destMarker = L.marker(e.latlng);
   destMarker.addTo(thisMap).bindPopup(nowString() + " 目的位置");
+  updateArrow();
+};
+// 方向線
+var destArrow = null;
+function updateArrow() {
+  if (destArrow) { thisMap.removeLayer(destArrow); };
+  if (hereMarker && destMarker) {
+    const src = hereMarker.getLatLng();
+    const dst = destMarker.getLatLng();
+    destArrow = L.polyline([[src.lat,src.lng],[dst.lat,dst.lng]],{color:"#f00",opacity:0.5});
+    destArrow.addTo(thisMap);
+  };
 };
 ////////// SCRIPT END
 </script>
