@@ -27,8 +27,9 @@ COLOR = { "快":"#f00", "晴":"#f40", "曇":"#000", "雨":"#00f", "雪":"#0f0",}
 TENKI = lambda x: "<font color=%s>%s</font>"%(COLOR[x],x)
 DOW2JP = ["月","火","水","木","金","土","日"]
 DAY_HR = lambda x: "%s曜%02d時"%(DOW2JP[x.dayofweek],x.hour)
+ROUND0 = lambda x: "%.0f"%x
 ROUND1 = lambda x: "%.1f"%x
-FORMAT = { "JST":DAY_HR, "天気":TENKI, "気温":ROUND1, "湿度":ROUND1, "雲量":ROUND1, "日射":ROUND1, "突風":ROUND1, "視程":ROUND1,}
+FORMAT = { "JST":DAY_HR, "天気":TENKI, "気温":ROUND1, "湿度":ROUND1, "雲量":ROUND0, "日射":ROUND1, "突風":ROUND1, "視程":ROUND1,}
 
 ########################################################
 ## 抽出地点と気象変数の指定
@@ -44,6 +45,7 @@ for SDP in SDP_LIST.index:
   NAME = SDP_LIST.loc[SDP,"NAME"]
   FUKEN = SDP_LIST.loc[SDP,"FUKEN"]
   #LOCATION = SDP_LIST.loc[SDP,"LOCATION"]
+  DF["雲量"] = DF["雲量"] * 10.
   print(sys.argv[0],SDP,NAME)
   ########################################################
   ROW = DF[DF.index==JST1].values[0]
@@ -52,6 +54,7 @@ for SDP in SDP_LIST.index:
   HTML += "<center>"
   HTML += "GFS天気予報" +" "+ FUKEN +" "+ NAME + "<br>"
   HTML += TAB.to_html(formatters=FORMAT,index=False,escape=False).replace("\n","")
+  HTML += "気温℃ 湿度% 雲量0-10 日射kW/㎡ 突風m/s 視程km<br>"
   HTML += str(NOW)
   HTML += "</center>"
   SDP_NEWS.loc[SDP] = [LAT,LON,ICON[ROW[0]],HTML]

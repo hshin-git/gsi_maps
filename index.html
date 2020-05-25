@@ -110,31 +110,23 @@ function nowString() {
 // 距離計算
 function toRadian(degree) { return degree*Math.PI/180.; };
 function getDistance(src,dst) {
-  var lon1 = toRadian(src.lng),
-      lat1 = toRadian(src.lat),
-      lon2 = toRadian(dst.lng),
-      lat2 = toRadian(dst.lat);
-  var deltaLat = lat2 - lat1;
-  var deltaLon = lon2 - lon1;
-  var a = Math.pow(Math.sin(deltaLat/2), 2) + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(deltaLon/2), 2);
-  var c = 2. * Math.asin(Math.sqrt(a));
+  const 
+    lon1 = toRadian(src.lng), lat1 = toRadian(src.lat),
+    lon2 = toRadian(dst.lng), lat2 = toRadian(dst.lat);
+  const deltaLat = lat2 - lat1;
+  const deltaLon = lon2 - lon1;
+  const a = Math.pow(Math.sin(deltaLat/2), 2) + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(deltaLon/2), 2);
+  const c = 2. * Math.asin(Math.sqrt(a));
   return c * 6371.;
 };
 // 現在位置
 var hereMarker = null;
+var hereHeader = "";
 function onLocationFound(e) {
-  const radius = e.accuracy / 2;
   if (hereMarker) { thisMap.removeLayer(hereMarker); };
   hereMarker = L.marker(e.latlng);
-  var dest = "";
-  if (destMarker) {
-    const src = hereMarker.getLatLng();
-    const dst = destMarker.getLatLng();
-    const dist = getDistance(src,dst);
-    const angl = L.GeometryUtil.bearing(src,dst);
-    dest = "<br>方位"+ angl.toFixed(1) +"度<br>距離" + dist.toFixed(1) +"km";
-  };
-  hereMarker.addTo(thisMap).bindPopup("現在位置<br>" + nowString() + dest).openPopup();
+  hereHeader = "現在位置<br>" + nowString();
+  hereMarker.addTo(thisMap).bindPopup(hereHeader);
   updateArrow();
 };
 function onLocationError(e) {
@@ -148,7 +140,8 @@ var destMarker = null;
 function onContextMenu(e) {
   if (destMarker) { thisMap.removeLayer(destMarker); };
   destMarker = L.marker(e.latlng);
-  destMarker.addTo(thisMap).bindPopup("目的位置<br>" + nowString());
+  var destPopup = "目的位置<br>" + nowString();
+  destMarker.addTo(thisMap).bindPopup(destPopup);
   updateArrow();
 };
 // 目的方位
@@ -156,10 +149,16 @@ var destArrow = null;
 function updateArrow() {
   if (destArrow) { thisMap.removeLayer(destArrow); };
   if (hereMarker && destMarker) {
+    // 目的位置向け矢印の更新
     const src = hereMarker.getLatLng();
     const dst = destMarker.getLatLng();
     destArrow = L.polyline([[src.lat,src.lng],[dst.lat,dst.lng]],{color:"#f00",opacity:0.5});
     destArrow.addTo(thisMap);
+    // 現在位置テキストの更新
+    const dist = getDistance(src,dst);
+    const angl = L.GeometryUtil.bearing(src,dst);
+    const destText = "<br>方位"+ angl.toFixed(1) +"度<br>距離" + dist.toFixed(1) +"km";
+    hereMarker.bindPopup(hereHeader + destText).openPopup();
   };
 };
 ////////// SCRIPT END
