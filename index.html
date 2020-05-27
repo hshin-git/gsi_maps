@@ -26,21 +26,30 @@ html, body, #mapContainer { height:100%; width:100vw; }
 <script src="dist/Control.OSMGeocoder.js"></script>
 <script>
 ////////// SCRIPT BEGIN
-// CSVレイヤの取得（lat,lon,icon,html）
-function csvIcon(feature,latlng) { return L.marker(latlng,{icon:L.icon({iconUrl:feature.properties["icon"],iconSize:[32,32],}),}); };
-function csvHtml(feature,layer) { layer.bindPopup(feature.properties["html"]); };
-function getCsvLayer(url) {
-  var csvLayer = null;
+// 外部レイヤの取得
+function getLayerFromURL(url,makeLayer) {
+  var layer = null;
   var req = new XMLHttpRequest();
   req.onreadystatechange = function() {
     if(req.readyState == 4 && req.status == 200){
-      csvLayer = L.geoCsv(req.responseText,{firstLineTitles:true,latitudeTitle:'lat',longitudeTitle:'lon',fieldSeparator:',', onEachFeature:csvHtml, pointToLayer:csvIcon,});
-    }
+      layer = makeLayer(req.responseText);
+    };
   };
   req.open("GET",url, false);
   req.send(null);
-  return csvLayer;
+  return layer;
 };
+
+// CSVレイヤの定義（lat,lon,icon,html）
+function csvMarker(feature,latlng) { return L.marker(latlng,{icon:L.icon({iconUrl:feature.properties.icon,iconSize:[32,32],}),}); };
+function csvPopup(feature,layer) { layer.bindPopup(feature.properties.html); };
+function csvLayer(csv) { return L.geoCsv(csv, { pointToLayer:csvMarker, onEachFeature:csvPopup, firstLineTitles:true,latitudeTitle:'lat',longitudeTitle:'lon',fieldSeparator:',', }); };
+
+// USGSレイヤの定義
+function usgsMarker(feature,latlng) { return L.circleMarker(latlng, { radius:Math.pow(feature.properties.mag,2)/4.0, }); };
+function usgsPopup(feature,layer) { layer.bindPopup((new Date(feature.properties.time)).toUTCString() + "<br>" + feature.properties.title); };
+function usgsLayer(json) { return L.geoJSON(JSON.parse(json), { pointToLayer:usgsMarker, onEachFeature:usgsPopup, }); };
+
 // タイルURLの生成
 function GSI_URL(KEY,EXT) { return "https://cyberjapandata.gsi.go.jp/xyz/"+KEY+"/{z}/{x}/{y}."+EXT; };
 function GSI_OPT(MIN,MAX,OPA) { return {opacity:OPA, /*minNativeZoom:MIN,*/ maxNativeZoom:MAX, attribution:"<a href='https://maps.gsi.go.jp/development/ichiran.html'>国土地理院</a>" }; };
@@ -60,7 +69,9 @@ const baseTiles = {
 // レイヤ地図の定義
 const OVER = 0.7;
 const overTiles = {
-  "GFS 天気予報":	getCsvLayer("./layer/sdp_layer.csv"),
+  "GFS 天気予報":	getLayerFromURL("./layer/sdp_layer.csv",csvLayer),
+  "USGS 震源地":	getLayerFromURL("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",usgsLayer),
+//"USGS 震源地":	getLayerFromURL("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson",usgsLayer),
   "GSI 色別標高図":	L.tileLayer(GSI_URL("relief","png"),GSI_OPT(5,15,OVER)),
   "GSI 陰影起伏図":	L.tileLayer(GSI_URL("hillshademap","png"),GSI_OPT(2,16,OVER)),
 //"GSI 赤色立体図":	L.tileLayer(GSI_URL("sekishoku","png"),GSI_OPT(2,14,OVER)),
@@ -97,7 +108,7 @@ function _onLoad() {
   //L.control.zoom().addTo(thisMap);
   L.control.scale().addTo(thisMap);
   L.control.layers(baseTiles,overTiles).addTo(thisMap);
-  // 地名検索
+  // 地名検索窓
   const osmGeocoder = new L.Control.OSMGeocoder({position:'topleft'});
   thisMap.addControl(osmGeocoder);
 };
@@ -133,7 +144,7 @@ function onLocationError(e) {
   alert(e.message);
 };
 function _hereButton() {
-  thisMap.locate({setView:true, maxZoom:16});
+  thisMap.locate({setView:true, maxZoom:15});
 };
 // 目的位置
 var destMarker = null;
@@ -152,7 +163,7 @@ function updateArrow() {
     // 目的位置向け矢印の更新
     const src = hereMarker.getLatLng();
     const dst = destMarker.getLatLng();
-    destArrow = L.polyline([[src.lat,src.lng],[dst.lat,dst.lng]],{color:"#f00",opacity:0.5});
+    destArrow = L.polyline([[src.lat,src.lng],[dst.lat,dst.lng]],{opacity:0.5});
     destArrow.addTo(thisMap);
     // 現在位置テキストの更新
     const dist = getDistance(src,dst);

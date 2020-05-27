@@ -29,7 +29,7 @@ DOW2JP = ["月","火","水","木","金","土","日"]
 DAY_HR = lambda x: "%s曜%02d時"%(DOW2JP[x.dayofweek],x.hour)
 ROUND0 = lambda x: "%.0f"%x
 ROUND1 = lambda x: "%.1f"%x
-FORMAT = { "JST":DAY_HR, "天気":TENKI, "気温":ROUND1, "湿度":ROUND1, "雲量":ROUND0, "日射":ROUND1, "突風":ROUND1, "視程":ROUND1,}
+FORMAT = { "JST":DAY_HR, "天気":TENKI, "気温":ROUND1, "湿度":ROUND1, "雲量":ROUND1, "日射":ROUND1, "突風":ROUND1, "視程":ROUND1,}
 
 ########################################################
 ## 抽出地点と気象変数の指定
@@ -64,4 +64,3 @@ SDP_NEWS.to_csv(OUT_PATH,encoding="utf-8")
 
 ########################################################
 sys.exit(0)
-
