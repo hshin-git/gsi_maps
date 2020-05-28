@@ -46,7 +46,7 @@ function csvPopup(feature,layer) { layer.bindPopup(feature.properties.html); };
 function csvLayer(csv) { return L.geoCsv(csv, { pointToLayer:csvMarker, onEachFeature:csvPopup, firstLineTitles:true,latitudeTitle:'lat',longitudeTitle:'lon',fieldSeparator:',', }); };
 
 // USGSレイヤの定義
-function usgsMarker(feature,latlng) { return L.circleMarker(latlng, { radius:Math.pow(feature.properties.mag,2)/4.0, }); };
+function usgsMarker(feature,latlng) { return L.circleMarker(latlng, { radius:Math.pow(feature.properties.mag,2)/2.0, }); };
 function usgsPopup(feature,layer) { layer.bindPopup((new Date(feature.properties.time)).toUTCString() + "<br>" + feature.properties.title); };
 function usgsLayer(json) { return L.geoJSON(JSON.parse(json), { pointToLayer:usgsMarker, onEachFeature:usgsPopup, }); };
 
@@ -70,8 +70,8 @@ const baseTiles = {
 const OVER = 0.7;
 const overTiles = {
   "GFS 天気予報":	getLayerFromURL("./layer/sdp_layer.csv",csvLayer),
-  "USGS 震源地":	getLayerFromURL("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",usgsLayer),
-//"USGS 震源地":	getLayerFromURL("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson",usgsLayer),
+//"USGS 震源地":	getLayerFromURL("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",usgsLayer),
+  "USGS 震源地":	getLayerFromURL("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson",usgsLayer),
   "GSI 色別標高図":	L.tileLayer(GSI_URL("relief","png"),GSI_OPT(5,15,OVER)),
   "GSI 陰影起伏図":	L.tileLayer(GSI_URL("hillshademap","png"),GSI_OPT(2,16,OVER)),
 //"GSI 赤色立体図":	L.tileLayer(GSI_URL("sekishoku","png"),GSI_OPT(2,14,OVER)),
@@ -137,7 +137,7 @@ function onLocationFound(e) {
   if (hereMarker) { thisMap.removeLayer(hereMarker); };
   hereMarker = L.marker(e.latlng);
   hereHeader = "現在位置<br>" + nowString();
-  hereMarker.addTo(thisMap).bindPopup(hereHeader);
+  hereMarker.addTo(thisMap).bindPopup(hereHeader).openPopup();
   updateArrow();
 };
 function onLocationError(e) {
@@ -169,7 +169,7 @@ function updateArrow() {
     const dist = getDistance(src,dst);
     const angl = L.GeometryUtil.bearing(src,dst);
     const destText = "<br>方位"+ angl.toFixed(1) +"度<br>距離" + dist.toFixed(1) +"km";
-    hereMarker.bindPopup(hereHeader + destText).openPopup();
+    hereMarker.bindPopup(hereHeader + destText)
   };
 };
 ////////// SCRIPT END
