@@ -48,7 +48,6 @@ for SDP in SDP_LIST.index:
   FUKEN = SDP_LIST.loc[SDP,"FUKEN"]
   #LOCATION = SDP_LIST.loc[SDP,"LOCATION"]
   DF["雲量"] = DF["雲量"] * 100.
-  DF["暑さ"] = 0.735*DF["気温"] + 0.0374*DF["湿度"] + 0.00292*DF["気温"]*DF["湿度"] + 7.619*DF["日射"] - 4.557*DF["日射"]*DF["日射"] - 0.0572*(DF["突風"]/1.75) - 4.064
   print(sys.argv[0],SDP,NAME)
   ## GFSランキング
   """
