@@ -1,0 +1,27 @@
+/* map area */
+body { padding:0; margin:0; }
+html, body, #mapContainer { height:100%; width:100vw; }
+
+/* location button */
+#hereButton {
+  position:relative; top:10px; padding:10px; z-index:1000;
+  border-style:none; font-weight:bold; border-radius:8px;
+  background-color:royalBlue; color:white;
+}
+.buttonLayout { text-align:center; }
+
+/* leaflet popup */
+.leaflet-popup-content-wrapper table,th,td {
+  border-collapse: collapse;
+  border: 1px solid #aaa;
+}
+.leaflet-popup-content-wrapper th {
+  font-weight: bold;
+  text-align: center;
+  background-color:royalBlue; color:white;
+/*padding: 2px;*/
+}
+.leaflet-popup-content-wrapper td {
+  text-align: right;
+}
+

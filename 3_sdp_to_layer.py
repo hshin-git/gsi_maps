@@ -12,6 +12,7 @@ from datetime import datetime,timedelta
 print("argv:",sys.argv)
 
 SDP_PATH = "./info/sdp_list.csv"
+GFS_PATH = "./info/gfs_rank.csv"
 CSV_PATH = "./graph/%05d.csv"
 OUT_PATH = "./layer/sdp_layer.csv"
 
@@ -29,13 +30,14 @@ DOW2JP = ["月","火","水","木","金","土","日"]
 DAY_HR = lambda x: "%s曜%02d時"%(DOW2JP[x.dayofweek],x.hour)
 ROUND0 = lambda x: "%.0f"%x
 ROUND1 = lambda x: "%.1f"%x
-FORMAT = { "JST":DAY_HR, "天気":TENKI, "気温":ROUND1, "湿度":ROUND1, "雲量":ROUND1, "日射":ROUND1, "突風":ROUND1, "視程":ROUND1,}
+FORMAT = { "JST":DAY_HR, "天気":TENKI, "気温":ROUND1, "湿度":ROUND0, "雲量":ROUND0, "日射":ROUND1, "突風":ROUND1, "視程":ROUND1, "暑さ":ROUND1, }
 
 ########################################################
 ## 抽出地点と気象変数の指定
 ENCODE = "cp932"
 SDP_LIST = pd.read_csv(SDP_PATH,index_col="SDP",encoding=ENCODE)
 SDP_NEWS = pd.DataFrame(columns=["lat","lon","icon","html"],index=SDP_LIST.index)
+#GFS_RANK = pd.read_csv(GFS_PATH,parse_dates=['DATE'],index_col=0,encoding=ENCODE)
 
 ########################################################
 for SDP in SDP_LIST.index:
@@ -45,8 +47,19 @@ for SDP in SDP_LIST.index:
   NAME = SDP_LIST.loc[SDP,"NAME"]
   FUKEN = SDP_LIST.loc[SDP,"FUKEN"]
   #LOCATION = SDP_LIST.loc[SDP,"LOCATION"]
-  DF["雲量"] = DF["雲量"] * 10.
+  DF["雲量"] = DF["雲量"] * 100.
+  DF["暑さ"] = 0.735*DF["気温"] + 0.0374*DF["湿度"] + 0.00292*DF["気温"]*DF["湿度"] + 7.619*DF["日射"] - 4.557*DF["日射"]*DF["日射"] - 0.0572*(DF["突風"]/1.75) - 4.064
   print(sys.argv[0],SDP,NAME)
+  ## GFSランキング
+  """
+  RANK = GFS_RANK[(GFS_RANK.DATE<JST2) & (GFS_RANK.SDP==SDP)]
+  TEXT = "<ul>"
+  for r in RANK.index:
+    v = GFS_RANK.loc[r,"GFS"]
+    p = GFS_RANK.loc[r,"PERCENTILE"]
+    TEXT += "<li>{0} is {1}".format(v[:-3],"large" if p>50 else "small")
+  TEXT += "</ul>"
+  """
   ########################################################
   ROW = DF[DF.index==JST1].values[0]
   TAB = DF[(DF.index>=JST1) & (DF.index<JST2)].reset_index()
@@ -54,7 +67,7 @@ for SDP in SDP_LIST.index:
   HTML += "<center>"
   HTML += "GFS天気予報" +" "+ FUKEN +" "+ NAME + "<br>"
   HTML += TAB.to_html(formatters=FORMAT,index=False,escape=False).replace("\n","")
-  HTML += "気温℃ 湿度% 雲量0-10 日射kW/㎡ 突風m/s 視程km<br>"
+  HTML += "気温℃ 湿度% 雲量% 日射kW/㎡ 突風m/s 視程km<br>"
   HTML += str(NOW)
   HTML += "</center>"
   SDP_NEWS.loc[SDP] = [LAT,LON,ICON[ROW[0]],HTML]
