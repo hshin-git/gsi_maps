@@ -24,8 +24,8 @@ JST2 = datetime(NOW.year,NOW.month,NOW.day,3*int(NOW.hour/3),0) + timedelta(hour
 
 ## 天気アイコンの定義
 ICON = { "快":"./tenki/hare.png", "晴":"./tenki/hare_kumori.png", "曇":"./tenki/kumori.png", "雨":"./tenki/kumori_ame.png", "雪":"./tenki/snow.png",}
-COLOR = { "快":"#f00", "晴":"#f40", "曇":"#000", "雨":"#00f", "雪":"#0f0",}
-TENKI = lambda x: "<font color=%s>%s</font>"%(COLOR[x],x)
+COLOR = { "快":"#f00", "晴":"#f00", "曇":"#000", "雨":"#00f", "雪":"#0f0",}
+TENKI = lambda x: "<font color=%s><b>%s</b></font>"%(COLOR[x],x)
 DOW2JP = ["月","火","水","木","金","土","日"]
 DAY_HR = lambda x: "%s曜%02d時"%(DOW2JP[x.dayofweek],x.hour)
 ROUND0 = lambda x: "%.0f"%x
@@ -64,10 +64,10 @@ for SDP in SDP_LIST.index:
   TAB = DF[(DF.index>=JST1) & (DF.index<JST2)].reset_index()
   HTML = ""
   HTML += "<center>"
-  HTML += "GFS天気予報" +" "+ FUKEN +" "+ NAME + "<br>"
+  HTML += "<b>GFS天気予報" +" "+ FUKEN +" "+ NAME + "</b><br>"
   HTML += TAB.to_html(formatters=FORMAT,index=False,escape=False).replace("\n","")
   HTML += "気温℃ 湿度% 雲量% 日射kW/㎡ 突風m/s 視程km<br>"
-  HTML += str(NOW)
+  #HTML += str(NOW)
   HTML += "</center>"
   SDP_NEWS.loc[SDP] = [LAT,LON,ICON[ROW[0]],HTML]
 

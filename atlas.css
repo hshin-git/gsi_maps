@@ -5,23 +5,28 @@ html, body, #mapContainer { height:100%; width:100vw; }
 /* location button */
 #hereButton {
   position:relative; top:10px; padding:10px; z-index:1000;
-  border-style:none; font-weight:bold; border-radius:8px;
-  background-color:royalBlue; color:white;
+  border-style:none;
+  border-radius:8px;
+  font-weight:bold;
+/*background-color:gold; color:black;*/
 }
 .buttonLayout { text-align:center; }
 
 /* leaflet popup */
 .leaflet-popup-content-wrapper table,th,td {
   border-collapse: collapse;
-  border: 1px solid #aaa;
+  border: none;
 }
 .leaflet-popup-content-wrapper th {
   font-weight: bold;
   text-align: center;
-  background-color:royalBlue; color:white;
-/*padding: 2px;*/
+  border-bottom: solid 1px black;
 }
 .leaflet-popup-content-wrapper td {
   text-align: right;
+  border-bottom: solid 0px gray;
+}
+.leaflet-popup-content-wrapper table tr:nth-child(even){
+  background-color: #eee
 }
 
