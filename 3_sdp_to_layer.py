@@ -28,9 +28,9 @@ COLOR = { "快":"#f00", "晴":"#f00", "曇":"#000", "雨":"#00f", "雪":"#0f0",}
 TENKI = lambda x: "<font color=%s><b>%s</b></font>"%(COLOR[x],x)
 DOW2JP = ["月","火","水","木","金","土","日"]
 DAY_HR = lambda x: "<b>%s曜%02d時</b>"%(DOW2JP[x.dayofweek],x.hour)
-ROUND0 = lambda x: "%.0f"%x
-ROUND1 = lambda x: "%.1f"%x
-FORMAT = { "JST":DAY_HR, "天気":TENKI, "気温":ROUND1, "湿度":ROUND0, "雲量":ROUND0, "日射":ROUND1, "突風":ROUND1, "視程":ROUND1, "暑さ":ROUND1, }
+ROUND0 = lambda x: "%.0f"%round(x,0)
+ROUND1 = lambda x: "%.1f"%round(x,1)
+FORMAT = { "JST":DAY_HR, "天気":TENKI, "気温":ROUND0, "湿度":ROUND0, "雲量":ROUND0, "日射":ROUND1, "突風":ROUND0, "視程":ROUND0, "暑さ":ROUND0, }
 
 ########################################################
 ## 抽出地点と気象変数の指定
