@@ -6,7 +6,7 @@ html, body, #mapContainer { height:100%; width:100vw; }
 #hereButton {
   position:relative; top:10px; padding:10px; z-index:1000;
   font-weight:bold;
-/*border-style:none; border-radius:8px;*/
+  border-style:none; border-radius:6px;
 /*background-color:gold; color:black;*/
 }
 .buttonLayout { text-align:center; }
