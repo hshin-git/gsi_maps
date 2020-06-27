@@ -25,15 +25,18 @@ function usgsLayer(json) { return L.geoJSON(JSON.parse(json), { pointToLayer:usg
 
 // タイルURLの生成
 function GSI_URL(KEY,EXT) { return "https://cyberjapandata.gsi.go.jp/xyz/"+KEY+"/{z}/{x}/{y}."+EXT; };
+function DIS_URL(KEY,EXT) { return "https://disaportaldata.gsi.go.jp/raster/"+KEY+"/{z}/{x}/{y}."+EXT; };
 function GSI_OPT(MIN,MAX,OPA) { return {opacity:OPA, /*minNativeZoom:MIN,*/ maxNativeZoom:MAX, attribution:"<a href='https://maps.gsi.go.jp/development/ichiran.html'>国土地理院</a>" }; };
 function MAP_OPT(MIN,MAX,OPA) { return {opacity:OPA, /*minNativeZoom:MIN,*/ maxNativeZoom:MAX, attribution:"AIST/OSM/OPTM/WMT" }; };
 // ベース地図の定義
 const BASE = 1.0;
 const baseTiles = {
+/* 国土地理院タイル */
   "GSI 淡色地図":	L.tileLayer(GSI_URL("pale","png"),GSI_OPT(5,18,BASE)),
   "GSI 標準地図":	L.tileLayer(GSI_URL("std","png"),GSI_OPT(5,18,BASE)),
   "GSI 白地図":		L.tileLayer(GSI_URL("blank","png"),GSI_OPT(5,14,BASE)),
   "GSI 英語地図":	L.tileLayer(GSI_URL("english","png"),GSI_OPT(5,11,BASE)),
+/* Open Street Map */
   "OSM 標準地図":	L.tileLayer('https://tile.openstreetmap.jp/{z}/{x}/{y}.png',MAP_OPT(2,18,BASE)),
 //"OSM 白黒図":		L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png',MAP_OPT(2,16,BASE)),
 //"OSM 地形図":		L.tileLayer('http://tile.stamen.com/terrain/{z}/{x}/{y}.png',MAP_OPT(2,16,BASE)),
@@ -42,18 +45,20 @@ const baseTiles = {
 // レイヤ地図の定義
 const OVER = 0.7;
 const overTiles = {
+/* 天気予報等レイヤ */
   "GFS 天気予報":	getLayerFromURL("./layer/sdp_layer.csv",csvLayer),
 //"USGS 震源地":	getLayerFromURL("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",usgsLayer),
 //"USGS 震源地":	getLayerFromURL("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson",usgsLayer),
+/* 国土地理院タイル */
   "GSI 色別標高図":	L.tileLayer(GSI_URL("relief","png"),GSI_OPT(5,15,OVER)),
   "GSI 陰影起伏図":	L.tileLayer(GSI_URL("hillshademap","png"),GSI_OPT(2,16,OVER)),
 //"GSI 赤色立体図":	L.tileLayer(GSI_URL("sekishoku","png"),GSI_OPT(2,14,OVER)),
 //"GSI 傾斜量図":	L.tileLayer(GSI_URL("slopemap","png"),GSI_OPT(3,15,OVER)),
   "GSI 傾斜量区分図":	L.tileLayer(GSI_URL("slopezone1map","png"),GSI_OPT(3,15,OVER)),
   "GSI 活断層図":	L.tileLayer(GSI_URL("afm","png"),GSI_OPT(11,16,OVER)),
-  "GSI 土地条件図":	L.tileLayer(GSI_URL("lcm25k_2012","png"),GSI_OPT(10,16,OVER)),
+//"GSI 土地条件図":	L.tileLayer(GSI_URL("lcm25k_2012","png"),GSI_OPT(10,16,OVER)),
 //"GSI 土地条件図":	L.tileLayer(GSI_URL("lcm25k","png"),GSI_OPT(14,16,OVER)),
-  "GSI 治水地形分類":	L.tileLayer(GSI_URL("lcmfc2","png"),GSI_OPT(11,16,OVER)),
+//"GSI 治水地形分類":	L.tileLayer(GSI_URL("lcmfc2","png"),GSI_OPT(11,16,OVER)),
   "GSI 明治の低湿地":	L.tileLayer(GSI_URL("swale","png"),GSI_OPT(10,16,OVER)),
   "GSI 航空写真":	L.tileLayer(GSI_URL("seamlessphoto","jpg"),GSI_OPT(2,18,OVER)),
   "GSI 1988-1990年":	L.tileLayer(GSI_URL("gazo4","jpg"),GSI_OPT(10,17,OVER)),
@@ -62,6 +67,13 @@ const overTiles = {
   "GSI 1974-1978年":	L.tileLayer(GSI_URL("gazo1","jpg"),GSI_OPT(10,17,OVER)),
   "GSI 1961-1969年":	L.tileLayer(GSI_URL("ort_old10","png"),GSI_OPT(10,17,OVER)),
   "GSI 1945-1950年":	L.tileLayer(GSI_URL("ort_USA10","png"),GSI_OPT(10,17,OVER)),
+/* ハザードマップ */
+  "GSI 洪水浸水想定":	L.tileLayer(DIS_URL("01_flood_l2_shinsuishin_data","png"),GSI_OPT(2,17,OVER)),
+//"GSI 浸水継続時間":	L.tileLayer(DIS_URL("01_flood_l2_keizoku_kuni_data","png"),GSI_OPT(2,17,OVER)),
+//"GSI 家屋倒壊想定":	L.tileLayer(DIS_URL("01_flood_l2_kaokutoukai_hanran_data","png"),GSI_OPT(2,17,OVER)),
+  "GSI 津波浸水想定":	L.tileLayer(DIS_URL("04_tsunami_newlegend","png"),GSI_OPT(2,17,OVER)),
+//"GSI 土砂災害警戒":	L.tileLayer(DIS_URL("05_kyukeishakeikaikuiki","png"),GSI_OPT(2,17,OVER)),
+/* その他レイヤ */
   "AIST 地質図":	L.tileLayer('https://gbank.gsj.jp/seamless/v2/api/1.2/tiles/{z}/{y}/{x}.png',MAP_OPT(10,13,OVER)),
   "OPTM 公共交通":	L.tileLayer('http://www.openptmap.org/tiles/{z}/{x}/{y}.png',MAP_OPT(4,17,BASE)),
 //"ORM 鉄道路線":	L.tileLayer('https://tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',MAP_OPT(2,19,BASE)),
