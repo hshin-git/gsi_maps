@@ -21,7 +21,7 @@
 - 航空写真
 
 ## リンク集
-- [GSI Maps](http://tenki.cf/map/)
+- [GSI Maps](https://tenki.cf/map/)
 - [地理院 タイル一覧](https://maps.gsi.go.jp/development/ichiran.html)
 - [産総研 地質情報](https://gbank.gsj.jp/owscontents/)
 - [OpenStreatMap](https://openstreetmap.jp/)
