@@ -3,9 +3,10 @@
 ![GSI_MAP](https://user-images.githubusercontent.com/64751855/166336066-154f72d7-0bd3-4a61-ac08-f1bd5944d2f1.png)
 
 ## 概説
-国土地理院（GSI）の地図タイル画像を可視化するLeaflet.jsのプログラム例。
+国土地理院（GSI）[タイル画像](https://maps.gsi.go.jp/development/ichiran.html)を
+可視化する[Leaflet.js](https://leafletjs.com/)のプログラム例。
 本プログラムの利用サイト[GSI Maps](https://tenki.cf/map/)は、
-GSIの標準地図、淡色地図またはOpenStreetMapをベース地図に、
+GSIの標準地図、淡色地図または[OpenStreetMap](https://openstreetmap.jp/)をベース地図に、
 色別標高図、陰影起伏図、断層図や航空写真などをオーバーレイ表示する。
 スマホGPSから現在位置をマーカ表示する機能、
 サイト[GFS Rank](https://tenki.cf/gfs/)の天気予報をアイコン表示する機能を実装。
