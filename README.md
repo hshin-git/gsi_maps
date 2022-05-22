@@ -5,7 +5,7 @@
 ## 概説
 国土地理院（GSI）[タイル画像](https://maps.gsi.go.jp/development/ichiran.html)を
 可視化する[Leaflet.js](https://leafletjs.com/)のプログラム例。
-本プログラムの利用サイト[GSI Maps](https://52.193.72.209/map/)は、
+本プログラムの利用サイト[GSI Maps](http://52.193.72.209/map/)は、
 GSIの標準地図、淡色地図または[OpenStreetMap](https://openstreetmap.jp/)をベース地図に、
 色別標高図、陰影起伏図、断層図や航空写真などをオーバーレイ表示する。
 スマホGPSから現在位置をマーカ表示する機能、
@@ -27,7 +27,7 @@ GSIの標準地図、淡色地図または[OpenStreetMap](https://openstreetmap.
 - 航空写真
 
 ## 参考
-- [GSI Maps](https://52.193.72.209/map/)
+- [GSI Maps](http://52.193.72.209/map/)
 - [地理院 タイル一覧](https://maps.gsi.go.jp/development/ichiran.html)
 - [産総研 地質情報](https://gbank.gsj.jp/owscontents/)
 - [OpenStreatMap](https://openstreetmap.jp/)
